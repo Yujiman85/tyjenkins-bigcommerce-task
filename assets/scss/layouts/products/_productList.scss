@@ -3,6 +3,31 @@
 // =============================================================================
 
 
+#itemAdded {
+    display: none;
+    background-color: green;
+    color: white;
+    text-align: center;
+    border-radius: 5px;
+    width: 17%;
+    padding: 3px;
+}
+
+#itemRemoved {
+    display: none;
+    background-color: red;
+    color: white;
+    text-align: center;
+    border-radius: 5px;
+    width: 17%;
+    padding: 3px;
+}
+
+.removeAllButton {
+    background-color: gray;
+    color: rgba(255, 255, 255, 0.4);
+}
+
 // Product list
 // -----------------------------------------------------------------------------
 

@@ -1,5 +1,15 @@
+{{inject "category" category}}
+{{inject "customer" customer}}
 {{#if category.products}}
     {{> components/products/filter sort=pagination.category.sort}}
+
+    <!-- Button for adding all to cart -->
+    <a href="#" onclick="createCart(event)" data-products="{{category.products}}" data-event-type="product-click" data-button-type="add-cart" class="button button--small addAllButton">Add All to Cart</a>
+    <!-- Button for removing cart items -->
+    <a href="#" onclick="deleteCart(event)" data-products="{{category.products}}" data-event-type="product-click" data-button-type="remove-cart" class="button button--small removeAllButton">Remove All Items</a>
+    <br />
+    <span id='itemAdded'>All Items Added to Cart!</span>
+    <span id='itemRemoved'>All Items Removed!</span>
 
     <form action="{{urls.compare}}" method='POST' {{#if settings.data_tag_enabled}} data-list-name="Category: {{category.name}}" {{/if}} data-product-compare>
         {{#if theme_settings.product_list_display_mode '===' 'grid'}}
@@ -27,3 +37,69 @@
         {{lang 'categories.no_products'}}
     </p>
 {{/if}}
+
+<script>
+    fetch(`https://jenkinscommerce.mybigcommerce.com/api/storefront/carts`, {
+            method: "GET",
+        })
+        .then(res => res.json())
+        .then(data => {
+            //Checks if cart has items and enables Remove button
+            if (data.length) {
+                document.querySelector('.removeAllButton').style.pointerEvents = 'auto';
+                document.querySelector('.removeAllButton').style.cursor = 'pointer';
+                document.querySelector('.removeAllButton').classList.remove("removeAllButton");
+            } else {
+                document.querySelector('.removeAllButton').style.pointerEvents = 'none';
+                document.querySelector('.removeAllButton').style.cursor = 'default';
+            } 
+        })
+
+    function createCart(event) {
+        event.preventDefault();
+        let body = {
+            "line_items": [
+                {
+                    "quantity": 1,
+                    "product_id": 112
+                }
+            ]
+        }
+
+        fetch(`https://jenkinscommerce.mybigcommerce.com/api/storefront/carts`, {
+            method: "POST",
+            credentials: "same-origin",
+            headers: {
+                "Content-Type": "application/json"},
+            body: JSON.stringify(body)
+        })
+        .then(res => res.json())
+        .then(data => console.log(data))
+        .catch(error => console.log(error))
+
+        document.querySelector('#itemAdded').style.display = 'block';
+        
+        document.querySelector('.removeAllButton').style.pointerEvents = 'auto';
+        document.querySelector('.removeAllButton').style.cursor = 'pointer';
+        document.querySelector('.removeAllButton').classList.remove("removeAllButton");
+
+        setTimeout(() => {
+            document.querySelector('#itemAdded').style.display = 'none';
+        }, 3000)
+    }
+
+    function deleteCart(event) {
+        event.preventDefault();
+        fetch(`https://jenkinscommerce.mybigcommerce.com/api/storefront/carts`, {
+            method: "GET",
+        })
+        .then(res => res.json())
+        .then(data => {
+            let cartId = data[0].id;
+            fetch(`https://jenkinscommerce.mybigcommerce.com/api/storefront/carts/${cartId}`, {
+                method: 'DELETE'
+            })
+        })
+    }
+
+</script>
