@@ -3,15 +3,19 @@
 {{#if category.products}}
     {{> components/products/filter sort=pagination.category.sort}}
     
+    {{!-- Block showing customer info only if they are logged in --}}
     {{#if customer}}
         <div class='userblock'>Hello <strong>{{customer.name}}</strong>! email: <strong>{{customer.email}}</strong></div>
     {{/if}}
     
     <!-- Button for adding all to cart -->
     <a href="#" onclick="createCart(event)" data-products="{{category.products}}" data-event-type="product-click" data-button-type="add-cart" class="button button--small addAllButton">Add All to Cart</a>
+
     <!-- Button for removing cart items -->
     <a href="#" onclick="deleteCart(event)" data-products="{{category.products}}" data-event-type="product-click" data-button-type="remove-cart" class="button button--small removeAllButtonDisabled">Remove All Items</a>
     <br />
+
+    {{!-- Messages to show customer after either button is clicked --}}
     <span id='itemAdded'>All Items Added to Cart!</span>
     <span id='itemRemoved'>All Items Removed!</span>
 
@@ -43,7 +47,7 @@
 {{/if}}
 
 <script>
-    console.log({{{json customer}}})
+    //Checks to see if there is a cart for the current customer
     fetch(`https://jenkinscommerce.mybigcommerce.com/api/storefront/carts`, {
             method: "GET",
         })
@@ -61,15 +65,19 @@
             } 
         })
 
+    //Function to create cart and enable "Remove All" button
     function createCart(event) {
         event.preventDefault();
         let body = {
-            "line_items": [
-                {
-                    "quantity": 1,
-                    "product_id": 112
-                }
-            ]
+            "line_items": []
+        }
+
+        for (let i = 0; i < {{{json category.products.length}}}; i++) {
+            let itemsToAdd = {
+                "quantity": 1
+            }
+            itemsToAdd["product_id"] = {{{json category.products}}}[i].id;
+            body.line_items.push(itemsToAdd);
         }
 
         fetch(`https://jenkinscommerce.mybigcommerce.com/api/storefront/carts`, {
@@ -80,7 +88,6 @@
             body: JSON.stringify(body)
         })
         .then(res => res.json())
-        .then(data => console.log(data))
         .catch(error => console.log(error))
 
         document.querySelector('#itemAdded').style.display = 'block';
@@ -95,6 +102,7 @@
         }, 3000)
     }
 
+    //Function to remove items from cart and disable "Remove All" button
     function deleteCart(event) {
         event.preventDefault();
         fetch(`https://jenkinscommerce.mybigcommerce.com/api/storefront/carts`, {
