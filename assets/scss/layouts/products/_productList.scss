@@ -4,6 +4,18 @@
 
 //
 
+//styling for div containing user info
+// -----------------------------------------------------------------------------
+.userblock {
+    width: 35vw;
+    background-color: rgb(52, 128, 199);
+    color: white;
+    border-radius: 5px;
+    padding: 5px;
+    margin-bottom: 10px;
+}
+// -----------------------------------------------------------------------------
+
 //Spans for showing user messages when "Add All Items" and "Remove All items" buttons are pressed
 // -----------------------------------------------------------------------------
 #itemAdded {

@@ -2,7 +2,11 @@
 {{inject "customer" customer}}
 {{#if category.products}}
     {{> components/products/filter sort=pagination.category.sort}}
-
+    
+    {{#if customer}}
+        <div class='userblock'>Hello <strong>{{customer.name}}</strong>! email: <strong>{{customer.email}}</strong></div>
+    {{/if}}
+    
     <!-- Button for adding all to cart -->
     <a href="#" onclick="createCart(event)" data-products="{{category.products}}" data-event-type="product-click" data-button-type="add-cart" class="button button--small addAllButton">Add All to Cart</a>
     <!-- Button for removing cart items -->
