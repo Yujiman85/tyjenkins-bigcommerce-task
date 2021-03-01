@@ -6,7 +6,7 @@
     <!-- Button for adding all to cart -->
     <a href="#" onclick="createCart(event)" data-products="{{category.products}}" data-event-type="product-click" data-button-type="add-cart" class="button button--small addAllButton">Add All to Cart</a>
     <!-- Button for removing cart items -->
-    <a href="#" onclick="deleteCart(event)" data-products="{{category.products}}" data-event-type="product-click" data-button-type="remove-cart" class="button button--small removeAllButton">Remove All Items</a>
+    <a href="#" onclick="deleteCart(event)" data-products="{{category.products}}" data-event-type="product-click" data-button-type="remove-cart" class="button button--small removeAllButtonDisabled">Remove All Items</a>
     <br />
     <span id='itemAdded'>All Items Added to Cart!</span>
     <span id='itemRemoved'>All Items Removed!</span>
@@ -39,6 +39,7 @@
 {{/if}}
 
 <script>
+    console.log({{{json customer}}})
     fetch(`https://jenkinscommerce.mybigcommerce.com/api/storefront/carts`, {
             method: "GET",
         })
@@ -46,12 +47,13 @@
         .then(data => {
             //Checks if cart has items and enables Remove button
             if (data.length) {
-                document.querySelector('.removeAllButton').style.pointerEvents = 'auto';
-                document.querySelector('.removeAllButton').style.cursor = 'pointer';
-                document.querySelector('.removeAllButton').classList.remove("removeAllButton");
+                document.querySelector('.removeAllButtonDisabled').style.pointerEvents = 'auto';
+                document.querySelector('.removeAllButtonDisabled').style.cursor = 'pointer';
+                document.querySelector('.removeAllButtonDisabled').classList.add("removeAllButtonEnabled");
+                document.querySelector('.removeAllButtonDisabled').classList.remove("removeAllButtonDisabled");
             } else {
-                document.querySelector('.removeAllButton').style.pointerEvents = 'none';
-                document.querySelector('.removeAllButton').style.cursor = 'default';
+                document.querySelector('.removeAllButtonDisabled').style.pointerEvents = 'none';
+                document.querySelector('.removeAllButtonDisabled').style.cursor = 'default';
             } 
         })
 
@@ -79,9 +81,10 @@
 
         document.querySelector('#itemAdded').style.display = 'block';
         
-        document.querySelector('.removeAllButton').style.pointerEvents = 'auto';
-        document.querySelector('.removeAllButton').style.cursor = 'pointer';
-        document.querySelector('.removeAllButton').classList.remove("removeAllButton");
+        document.querySelector('.removeAllButtonDisabled').style.pointerEvents = 'auto';
+        document.querySelector('.removeAllButtonDisabled').style.cursor = 'pointer';
+        document.querySelector('.removeAllButtonDisabled').classList.add("removeAllButtonEnabled");
+        document.querySelector('.removeAllButtonDisabled').classList.remove("removeAllButtonDisabled");
 
         setTimeout(() => {
             document.querySelector('#itemAdded').style.display = 'none';
@@ -99,7 +102,15 @@
             fetch(`https://jenkinscommerce.mybigcommerce.com/api/storefront/carts/${cartId}`, {
                 method: 'DELETE'
             })
+            document.querySelector('#itemRemoved').style.display = 'block';
+            document.querySelector('.removeAllButtonEnabled').style.pointerEvents = 'none';
+            document.querySelector('.removeAllButtonEnabled').style.cursor = 'default';
+            document.querySelector('.removeAllButtonEnabled').classList.add("removeAllButtonDisabled");
+            document.querySelector('.removeAllButtonEnabled').classList.remove("removeAllButtonEnabled");
+
+            setTimeout(() => {
+                document.querySelector('#itemRemoved').style.display = 'none';
+            }, 3000)
         })
     }
-
 </script>

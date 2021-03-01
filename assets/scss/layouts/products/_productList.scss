@@ -2,7 +2,10 @@
 // PRODUCT LIST (CSS)
 // =============================================================================
 
+//
 
+//Spans for showing user messages when "Add All Items" and "Remove All items" buttons are pressed
+// -----------------------------------------------------------------------------
 #itemAdded {
     display: none;
     background-color: green;
@@ -22,11 +25,31 @@
     width: 17%;
     padding: 3px;
 }
+// -----------------------------------------------------------------------------
 
-.removeAllButton {
+//Buttons for adding and removing all items from cart
+// -----------------------------------------------------------------------------
+.addAllButton {
+    &:hover {
+        background-color: green;
+        color: white;
+        border: 1px solid green;
+    }
+}
+
+.removeAllButtonDisabled {
     background-color: gray;
     color: rgba(255, 255, 255, 0.4);
 }
+
+.removeAllButtonEnabled {
+    &:hover {
+        background-color: red;
+        color: white;    
+    }
+    
+}
+// -----------------------------------------------------------------------------
 
 // Product list
 // -----------------------------------------------------------------------------
